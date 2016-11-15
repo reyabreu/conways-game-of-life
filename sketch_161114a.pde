@@ -1,7 +1,7 @@
-final static int sizeX = 400; //<>//
-final static int sizeY = 400;
+private final static int sizeX = 400; //<>//
+private final static int sizeY = 400;
 
-boolean[][] grid = new boolean[20][20]; 
+private boolean[][] grid = new boolean[20][20]; 
 
 void setup() {
   size(400, 400);
@@ -87,10 +87,10 @@ void drawGrid() {
   traverseGrid(new GridDrawer());
 }
 
-void traverseGrid(Processor Processor) {
+void traverseGrid(Processor processor) {
   for (int tlY = 0; tlY < sizeY; tlY += 20) {  
     for (int tlX = 0; tlX < sizeX; tlX += 20) {
-      Processor.process(tlX, tlY);
+      processor.process(tlX, tlY);
     }
   }
 }
