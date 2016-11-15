@@ -1,7 +1,7 @@
 private final static int sizeX = 400; //<>//
 private final static int sizeY = 400;
 
-private boolean[][] grid = new boolean[20][20]; 
+private boolean[][] state = new boolean[40][40]; 
 
 void setup() {
   size(400, 400);
@@ -18,54 +18,42 @@ void nextState() {
 
   class StateCalculator implements Processor {
 
-    final boolean[][] tmpGrid = new boolean[20][20]; 
+    final boolean[][] newState = new boolean[40][40]; 
 
-    public boolean[][] getGrid() {
-      return tmpGrid;
+    public boolean[][] getNewState() {
+      return newState;
     }
 
     public void process(int posX, int posY) {
 
-      int x = posX/20;
-      int y = posY/20;
+      int x = posX/10;
+      int y = posY/10;
 
-      boolean state = grid[x][y];
       int neighbors = 0;
 
       for (int bY = y - 1; bY <= y + 1; bY++) {
-        if (bY < 0 || bY >= 20) continue;
+        if (bY < 0 || bY >= 40) continue;
         for (int bX = x - 1; bX <= x + 1; bX++) {
-          if (bX < 0 || (bY == y && bX == x) || bX >= 20) continue;
-          if (grid[bX][bY]) {
+          if (bX < 0 || (bY == y && bX == x) || bX >= 40) continue;
+          if (state[bX][bY]) {
             neighbors++;
           }
         }
-      }
-
-
-      if (state) {
-        if (neighbors < 2 || neighbors > 3) { 
-          state = false;
-        }
-      } else {
-        if (neighbors == 3) {
-          state = true;
-        }
-      }      
-
-      tmpGrid[x][y] = state;
+      }  
+      //conway's cell life rules
+      newState[x][y] =  state[x][y] ? neighbors == 2 || neighbors == 3 : neighbors == 3;
     }
   }
 
   final StateCalculator calc = new StateCalculator();
   traverseGrid(calc);
-  grid = calc.getGrid();
+  state = calc.getNewState();
 }
 
 void fillGrid() {
   class GridFiller implements Processor {
     public void process(int posX, int posY) {
-      grid[posX/20][posY/20] = random(100) > 80;
+      state[posX/10][posY/10] = random(100) > 80;
     }
   }
   traverseGrid(new GridFiller());
@@ -76,20 +64,20 @@ void drawGrid() {
   noStroke();
   class GridDrawer implements Processor {
     public void process(int posX, int posY) {
-      if (grid[posX/20][posY/20]) {
+      if (state[posX/10][posY/10]) {
         fill(232);
       } else {
         noFill();
       }
-      rect(posX, posY, 20, 20);
+      rect(posX, posY, 10, 10);
     }
   }
   traverseGrid(new GridDrawer());
 }
 
 void traverseGrid(Processor processor) {
-  for (int tlY = 0; tlY < sizeY; tlY += 20) {  
-    for (int tlX = 0; tlX < sizeX; tlX += 20) {
+  for (int tlY = 0; tlY < sizeY; tlY += 10) {  
+    for (int tlX = 0; tlX < sizeX; tlX += 10) {
       processor.process(tlX, tlY);
     }
   }
