@@ -13,6 +13,7 @@ void setup() {
   size(640, 480);
   frameRate(8);
   noSmooth();
+  noStroke();  
   fillGrid();
 }
 
@@ -97,8 +98,6 @@ void fillGrid() {
 }
 
 void drawGrid() {
-  //background(DEAD);
-  noStroke();
   class GridDrawer implements Processor {
     public void process(int posX, int posY) {
       fill(state[posX/cellSz][posY/cellSz] ? ALIVE : DEAD);
